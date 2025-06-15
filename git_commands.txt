@@ -1,0 +1,11 @@
+git init
+git config --global user.name "ATBurkeen"
+git config --global user.email "weikangkang@shu.edu.cn"
+git add .
+git commit -m "Initial commit: Project setup"
+git branch -M main
+git remote add origin https://github.com/ATBurkeen/Burkeen-blog.git
+git push -u origin main
+git add .
+git commit -m "Update: Improve login page styling with semi-transparent design"
+git push origin main 
