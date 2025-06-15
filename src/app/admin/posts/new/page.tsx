@@ -3,19 +3,19 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { generateChineseSlug } from '@/lib/utils'
 import MarkdownEditor from '@/components/MarkdownEditor'
-import pinyin from 'pinyin'
 
 export default function NewPostPage() {
-    const router = useRouter()
-    const supabase = createClientComponentClient()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [content, setContent] = useState('')
     const [tags, setTags] = useState('')
     const [published, setPublished] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
+    const router = useRouter()
+    const supabase = createClientComponentClient()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -28,16 +28,7 @@ export default function NewPostPage() {
             if (!user) throw new Error('请先登录')
 
             // 生成文章 slug
-            const pinyinText = pinyin(title, {
-                style: pinyin.STYLE_NORMAL,
-                segment: true
-            }).flat().join('-')
-
-            const slug = pinyinText
-                .toLowerCase()
-                .replace(/[^a-z0-9-]+/g, '-')
-                .replace(/(^-|-$)/g, '')
-                .replace(/-+/g, '-')
+            const slug = generateChineseSlug(title)
 
             // 创建文章
             const { data: post, error: postError } = await supabase
@@ -57,38 +48,45 @@ export default function NewPostPage() {
 
             // 处理标签
             const tagNames = tags.split(',').map(t => t.trim()).filter(Boolean)
-            for (const tagName of tagNames) {
-                // 尝试插入标签，如果已存在则忽略
-                const { data: tag, error: tagError } = await supabase
-                    .from('tags')
-                    .select()
-                    .eq('name', tagName)
-                    .single()
 
-                if (tagError && tagError.code !== 'PGRST116') {
-                    throw tagError
-                }
-
-                let tagId
-                if (!tag) {
-                    const { data: newTag, error: createTagError } = await supabase
+            if (tagNames.length > 0) {
+                // 获取或创建标签
+                for (const tagName of tagNames) {
+                    // 检查标签是否存在
+                    const { data: existingTag } = await supabase
                         .from('tags')
-                        .insert({ name: tagName, slug: tagName.toLowerCase() })
                         .select()
+                        .eq('name', tagName)
                         .single()
 
-                    if (createTagError) throw createTagError
-                    tagId = newTag.id
-                } else {
-                    tagId = tag.id
+                    let tagId
+                    if (existingTag) {
+                        tagId = existingTag.id
+                    } else {
+                        // 创建新标签
+                        const { data: newTag, error: tagError } = await supabase
+                            .from('tags')
+                            .insert({
+                                name: tagName,
+                                slug: generateChineseSlug(tagName)
+                            })
+                            .select()
+                            .single()
+
+                        if (tagError) throw tagError
+                        tagId = newTag.id
+                    }
+
+                    // 创建文章-标签关联
+                    const { error: relationError } = await supabase
+                        .from('post_tags')
+                        .insert({
+                            post_id: post.id,
+                            tag_id: tagId
+                        })
+
+                    if (relationError) throw relationError
                 }
-
-                // 创建文章-标签关联
-                const { error: linkError } = await supabase
-                    .from('post_tags')
-                    .insert({ post_id: post.id, tag_id: tagId })
-
-                if (linkError) throw linkError
             }
 
             router.push('/admin/posts')
@@ -141,41 +139,6 @@ export default function NewPostPage() {
         } catch (error: any) {
             console.error('Error uploading image:', error)
             throw new Error(error.message || '上传图片失败')
-        }
-    }
-
-    const handleAttachmentUpload = async (file: File) => {
-        try {
-            const { data: { user }, error: userError } = await supabase.auth.getUser()
-            if (userError) throw userError
-            if (!user) throw new Error('请先登录')
-
-            // 检查文件大小（限制为 10MB）
-            if (file.size > 10 * 1024 * 1024) {
-                throw new Error('附件大小不能超过 10MB')
-            }
-
-            // 生成安全的文件名
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}-${file.name}`
-            const filePath = `${user.id}/${fileName}`
-
-            const { error: uploadError } = await supabase.storage
-                .from('blog-uploads')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                })
-
-            if (uploadError) throw uploadError
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('blog-uploads')
-                .getPublicUrl(filePath)
-
-            return publicUrl
-        } catch (error: any) {
-            console.error('Error uploading attachment:', error)
-            throw new Error(error.message || '上传附件失败')
         }
     }
 
@@ -249,20 +212,19 @@ export default function NewPostPage() {
                         type="text"
                         value={tags}
                         onChange={(e) => setTags(e.target.value)}
-                        placeholder="使用英文逗号分隔多个标签..."
                         className="w-full h-12 px-4 rounded-md bg-white bg-opacity-50 border-0 focus:ring-2 focus:ring-blue-500"
+                        placeholder="输入标签，用逗号分隔..."
                     />
                 </div>
 
-                <div>
+                <div className="bg-white bg-opacity-50 backdrop-blur-sm rounded-lg p-6">
                     <label className="block text-lg font-medium text-gray-700 mb-2">
-                        文章内容
+                        内容
                     </label>
                     <MarkdownEditor
                         value={content}
                         onChange={setContent}
                         onImageUpload={handleImageUpload}
-                        onAttachmentUpload={handleAttachmentUpload}
                     />
                 </div>
             </form>
