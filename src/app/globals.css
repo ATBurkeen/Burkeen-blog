@@ -12,7 +12,7 @@
 
 /* 添加艺术字体类 */
 .art-font {
-    font-family: 'ZCOOL KuHei', sans-serif;
+    font-family: var(--font-noto-sc), sans-serif;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     background: linear-gradient(45deg, #2b5876, #4e4376);
     -webkit-background-clip: text;

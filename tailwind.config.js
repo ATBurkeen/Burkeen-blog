@@ -7,6 +7,9 @@ module.exports = {
     ],
     theme: {
         extend: {
+            fontFamily: {
+                noto: ['var(--font-noto-sc)'],
+            },
             typography: {
                 DEFAULT: {
                     css: {

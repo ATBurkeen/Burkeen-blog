@@ -1,9 +1,15 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Noto_Sans_SC } from 'next/font/google'
 import Header from '@/components/Header'
 
 const inter = Inter({ subsets: ['latin'] })
+const notoSansSC = Noto_Sans_SC({
+    weight: ['400', '700'],
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--font-noto-sc',
+})
 
 export const metadata: Metadata = {
     title: "Burkeen's Blog",
@@ -17,13 +23,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="zh-CN">
-            <head>
-                <link
-                    href="https://fonts.googleapis.com/css2?family=ZCOOL+KuHei&display=swap"
-                    rel="stylesheet"
-                />
-            </head>
-            <body className={inter.className}>
+            <body className={`${inter.className} ${notoSansSC.variable}`}>
                 <Header />
                 <main>{children}</main>
             </body>

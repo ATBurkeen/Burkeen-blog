@@ -1,10 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, ComponentPropsWithoutRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import remarkGfm from 'remark-gfm'
+
+type CodeProps = ComponentPropsWithoutRef<'code'> & {
+    inline?: boolean
+}
 
 interface MarkdownEditorProps {
     value?: string
@@ -75,8 +79,8 @@ export default function MarkdownEditor({
                         type="button"
                         onClick={() => setIsPreview(!isPreview)}
                         className={`px-4 py-2 rounded-md transition-colors ${isPreview
-                                ? 'bg-white shadow-sm'
-                                : 'hover:bg-white hover:shadow-sm'
+                            ? 'bg-white shadow-sm'
+                            : 'hover:bg-white hover:shadow-sm'
                             }`}
                     >
                         {isPreview ? '编辑' : '预览'}
@@ -120,11 +124,10 @@ export default function MarkdownEditor({
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                            code({ node, inline, className, children, ...props }) {
+                            code: ({ inline, className, children, ...props }: CodeProps) => {
                                 const match = /language-(\w+)/.exec(className || '')
                                 return !inline && match ? (
                                     <SyntaxHighlighter
-                                        {...props}
                                         style={tomorrow}
                                         language={match[1]}
                                         PreTag="div"
