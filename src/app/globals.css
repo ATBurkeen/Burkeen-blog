@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../styles/cursor.css';
+
+/* 导入站酷快乐体 */
+@font-face {
+    font-family: 'ZCOOL KuHei';
+    src: url('https://fonts.googleapis.com/css2?family=ZCOOL+KuHei&display=swap');
+}
+
+/* 添加艺术字体类 */
+.art-font {
+    font-family: 'ZCOOL KuHei', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, #2b5876, #4e4376);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.05em;
+}
+
+:root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+}
+
+body {
+    position: relative;
+    color: rgb(var(--foreground-rgb));
+    min-height: 100vh;
+}
+
+/* 背景图片容器 */
+body::before {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-image: url('/images/avatars/stardewbackground.png');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    filter: blur(2px);
+    z-index: -2;
+}
+
+/* 渐变遮罩 */
+body::after {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(to top,
+            rgba(255, 255, 255, 0.7) 0%,
+            /* 底部70%不透明度 */
+            rgba(255, 255, 255, 0.5) 30%,
+            /* 中下部50%不透明度 */
+            rgba(255, 255, 255, 0.3) 60%,
+            /* 中上部30%不透明度 */
+            rgba(255, 255, 255, 0) 100%
+            /* 顶部完全透明 */
+        );
+    pointer-events: none;
+    /* 确保蒙版不会影响页面交互 */
+    z-index: -1;
+}
+
+/* 确保主要内容在蒙版上层 */
+#__next {
+    position: relative;
+    z-index: 1;
+}
+
+@layer components {
+    .glass-container {
+        @apply bg-gray-50 bg-opacity-90 rounded-lg shadow-lg;
+    }
+
+    .content-container {
+        @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+    }
+
+    .input {
+        @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-100;
+    }
+
+    .btn-primary {
+        @apply px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 transition-colors;
+    }
+
+    .btn-secondary {
+        @apply px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50;
+    }
+
+    .card {
+        @apply bg-gray-50 bg-opacity-90 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300;
+    }
+}

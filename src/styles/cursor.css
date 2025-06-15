@@ -1,0 +1,104 @@
+/* 默认光标 */
+* {
+    cursor: url('/images/Abi/Normal.cur'), auto;
+}
+
+/* 文本输入 */
+input,
+textarea,
+[contenteditable="true"] {
+    cursor: url('/images/Abi/Text.cur'), text;
+}
+
+/* 链接和可点击元素 */
+a,
+button,
+[role="button"],
+select,
+summary {
+    cursor: url('/images/Abi/Link.cur'), pointer;
+}
+
+/* 禁用状态 */
+button:disabled,
+[aria-disabled="true"],
+.disabled {
+    cursor: url('/images/Abi/Unavailable.cur'), not-allowed;
+}
+
+/* 加载状态 */
+.loading,
+[aria-busy="true"] {
+    cursor: url('/images/Abi/Busy.cur'), progress;
+}
+
+/* 帮助提示 */
+[title],
+[aria-label],
+[data-tooltip] {
+    cursor: url('/images/Abi/Help.cur'), help;
+}
+
+/* 文本选择 */
+::selection {
+    cursor: url('/images/Abi/Text.cur'), text;
+}
+
+/* 调整大小 - 水平 */
+.resize-x,
+[data-resize="horizontal"] {
+    cursor: url('/images/Abi/Horizontal.cur'), ew-resize;
+}
+
+/* 调整大小 - 垂直 */
+.resize-y,
+[data-resize="vertical"] {
+    cursor: url('/images/Abi/Vertical.cur'), ns-resize;
+}
+
+/* 调整大小 - 对角线 */
+.resize-nw,
+[data-resize="diagonal1"] {
+    cursor: url('/images/Abi/Diagonal1.cur'), nw-resize;
+}
+
+.resize-ne,
+[data-resize="diagonal2"] {
+    cursor: url('/images/Abi/Diagonal2.cur'), ne-resize;
+}
+
+/* 移动元素 */
+.draggable,
+[draggable="true"] {
+    cursor: url('/images/Abi/Move.cur'), move;
+}
+
+/* 精确选择 */
+.precise,
+[data-cursor="precision"] {
+    cursor: url('/images/Abi/Precision.cur'), crosshair;
+}
+
+/* 手写/绘图 */
+.handwriting,
+[data-cursor="handwriting"] {
+    cursor: url('/images/Abi/Handwriting.cur'), crosshair;
+}
+
+/* 定位/标记 */
+.pin,
+[data-cursor="pin"] {
+    cursor: url('/images/Abi/Pin.cur'), pointer;
+}
+
+/* 用户交互 */
+.person,
+[data-cursor="person"] {
+    cursor: url('/images/Abi/Person.cur'), pointer;
+}
+
+/* 替代光标 */
+.alternate,
+[data-cursor="alternate"] {
+    cursor: url('/images/Abi/Alternate.cur'), pointer;
+}
