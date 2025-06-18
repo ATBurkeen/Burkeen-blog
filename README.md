@@ -46,7 +46,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-访问 http://localhost:3000 查看网站。
+访问 'burkeen-blog.vercel.app' 查看网站。
 
 ## 部署
 
